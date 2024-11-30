@@ -1,0 +1,2 @@
+# Ignore node_modules in the build-server directory
+build-server/node_modules/

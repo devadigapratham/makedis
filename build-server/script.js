@@ -33,7 +33,8 @@ async function init() {
         const distFolderPath = path.join(__dirname, 'output', 'dist')
         const distFolderContents = fs.readdirSync(distFolderPath, {recursive: true})
 
-        for (const filePath of distFolderContents) {
+        for (const file of distFolderContents) {
+            const filePath = path.join(distFolderPath, file)
             if (fs.lstat.Sync(filePath).isDirectory()) continue; 
 
             const command = new PutObjectCommand({
@@ -44,6 +45,7 @@ async function init() {
             })
 
             await s3Client.send(command)
+            console.log('uploaded', filePath)
         }
         console.log('Done!')
     })

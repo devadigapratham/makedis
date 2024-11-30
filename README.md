@@ -1,159 +1,158 @@
+# makedis: A Modern Deployment Framework
 
-# makedis: A Redis Server in Golang
+makedis is a feature-rich modern deployment framework designed to streamline application deployments, enhance static asset delivery, and enable scalable reverse proxy configurations. Built with robust and industry-standard technologies, Makedis offers a modular, efficient, and developer-friendly architecture that can be tailored to diverse use cases.
 
-This project is a simplified Redis-like server developed from scratch in Go. It implements core Redis functionalities such as TCP server setup, connection management, and client-server protocol handling. The project emphasizes scalability, performance, and a deep understanding of distributed systems and networking in Go.
+---
 
-----------
+## **Why Makedis?**
 
-## Features
+Makedis stands out as a complete deployment and proxying solution, offering:  
 
--   **TCP Server Setup**: Establishes a robust TCP server for handling client connections.
--   **Connection Management**: Manages multiple client connections efficiently.
--   **Protocol Handling**: Implements a custom protocol parser using pure functions for simplicity and maintainability.
--   **Data Storage**: Handles raw data storage and retrieval in memory for a fast and lightweight solution.
--   **Scalable Architecture**: Designed with scalability in mind, ensuring efficient resource utilization under load.
--   **Testing and Debugging**: Includes rigorous testing and debugging practices to maintain high performance and reliability.
--   **Performance Optimizations**: Optimized response times and resource handling for efficient server-client communication.
+1. **Seamless Deployment Workflow**  
+   - Automatically handles code cloning, building, and deployment to Amazon S3, minimizing manual overhead.  
 
-----------
+2. **Reverse Proxy for Static Assets**  
+   - Efficiently maps subdomains and domains to static assets stored in S3, ensuring fast and reliable content delivery.  
 
-## Getting Started
+3. **Scalability at its Core**  
+   - Built using Docker and AWS, Makedis can handle dynamic traffic, large-scale projects, and complex application requirements.  
 
-### Prerequisites
+4. **Modular Design for Flexibility**  
+   - Each service is designed as an independent module, making it easy to customize and extend functionality.  
 
--   **Go** (Version 1.20 or higher recommended)
+5. **Developer-Friendly Setup**  
+   - Clear setup instructions and minimal configuration requirements allow developers to focus on building rather than infrastructure.
 
-### Installation
+---
 
-1.  Clone the repository:
-    
-    ```bash
-    git clone <repository-url>  
-    cd makedis  
-    
-    ```
-    
-2.  Build the project:
-    
-    ```bash
-    go build -o makedis main.go  
-    
-    ```
-    
-3.  Run the server:
-    
-    ```bash
-    ./makedis
-    
-    ```
-    
-4.  Connect to the server using a Redis client or a simple TCP client:
-    
-    ```bash
-    telnet localhost 6379  
-    
-    ```
-    
+## **Project Overview**
 
-----------
+Makedis consists of the following services:  
 
-## Usage
+### **1. API Server**  
+The heart of the application, responsible for handling HTTP requests and orchestrating tasks like triggering builds and deployments.  
 
-### Basic Commands
+### **2. Build Server**  
+A service dedicated to:  
+- Cloning repositories.  
+- Building Docker images.  
+- Pushing static builds to Amazon S3 buckets.  
 
-Command
+### **3. S3 Reverse Proxy**  
+A reverse proxy service that:  
+- Routes requests to appropriate S3 buckets.  
+- Ensures seamless mapping of subdomains and domains to static assets.
 
-Description
+---
 
-Example
+## **How to Set Up Makedis Locally**
 
-`SET`
+Follow these steps to get Makedis running locally:
 
-Store a key-value pair
+### **1. Install Dependencies**  
+In each service folder (`api-server`, `build-server`, `s3-reverse-proxy`), run:  
+```bash
+npm install
+```
 
-`SET key value`
+### **2. Build and Push Docker Image for Build Server**  
+To build the `build-server` Docker image and push it to AWS ECR:  
+```bash
+docker build -t makedis-build-server .
+docker tag makedis-build-server <aws-account-id>.dkr.ecr.<region>.amazonaws.com/makedis-build-server
+docker push <aws-account-id>.dkr.ecr.<region>.amazonaws.com/makedis-build-server
+```
 
-`GET`
+### **3. Configure the API Server**  
+Provide the necessary configuration details such as:  
+- **TASK ARN**: The AWS task definition ARN.  
+- **CLUSTER ARN**: The AWS ECS cluster ARN.  
 
-Retrieve the value of a key
+### **4. Start Services**  
+Run the following commands in their respective directories:  
+```bash
+# Start the API Server
+cd api-server
+node index.js
 
-`GET key`
+# Start the S3 Reverse Proxy
+cd s3-reverse-proxy
+node index.js
+```
 
-`DEL`
+---
 
-Delete a key-value pair
+## **Service Overview**
 
-`DEL key`
+| Service Name          | Description                                           | Port  |  
+|-----------------------|-------------------------------------------------------|-------|  
+| **API Server**        | Handles API requests and task orchestration.          | :9000 |  
+| **Socket.IO Server**  | Facilitates real-time communications.                 | :9002 |  
+| **S3 Reverse Proxy**  | Proxies requests to static assets stored in S3.       | :8000 |  
 
-`EXISTS`
+---
 
-Check if a key exists
+## **Features and Benefits**
 
-`EXISTS key`
+### **1. Simplified Deployment**  
+Makedis eliminates the need for complex pipelines, enabling rapid builds and deployments with minimal effort.  
 
-`PING`
+### **2. Static Asset Delivery**  
+With S3 as the backbone for static file hosting, Makedis ensures low-latency delivery and high availability for web assets.  
 
-Test server connection
+### **3. Real-Time Updates**  
+The integrated Socket.IO server supports real-time communication, making it ideal for collaborative or dynamic applications.  
 
-`PING`
+### **4. Built with Modern Tools**  
+Makedis leverages Docker, AWS ECS, and Redis, ensuring reliability, scalability, and performance in production environments.  
 
-----------
+### **5. Developer-Centric Design**  
+The system is easy to configure and integrate with existing workflows, saving developers significant time and effort.  
 
-## Design and Implementation
+---
 
-1.  **TCP Server Setup**:
-    
-    -   Uses Go's `net` package to establish a TCP server.
-    -   Listens on a configurable port and handles incoming client connections.
-2.  **Connection Management**:
-    
-    -   Each client connection is handled in a separate Goroutine for concurrency.
-    -   Implements mechanisms to gracefully handle connection closures.
-3.  **Protocol Parsing**:
-    
-    -   Parses raw input from clients to identify commands and arguments.
-    -   Utilizes pure functions for a clean and testable codebase.
-4.  **Data Storage**:
-    
-    -   Maintains an in-memory key-value store for fast data access.
-    -   Supports basic operations like `SET`, `GET`, and `DEL`.
-5.  **Testing and Debugging**:
-    
-    -   Unit tests for individual components ensure robustness.
-    -   Logs and error handling mechanisms are in place for debugging.
-6.  **Performance Optimizations**:
-    
-    -   Implements strategies to reduce latency and optimize memory usage.
+## **Use Cases**
 
-----------
+- **Web Application Hosting**  
+  Makedis can deploy and serve single-page applications (SPAs), PWAs, and server-rendered applications with ease.  
 
-## Benchmarking
+- **Custom CI/CD Pipelines**  
+  Use Makedis as a lightweight alternative to traditional CI/CD systems for streamlined workflows.  
 
-The server has been benchmarked under different load scenarios to measure its performance and scalability.
+- **Reverse Proxy for Multi-Tenant Systems**  
+  Dynamically route subdomains and domains for SaaS applications and other multi-tenant setups.  
 
--   **Latency**: Minimal delay for common operations like `GET` and `SET`.
--   **Throughput**: Handles multiple concurrent connections efficiently.
+---
 
-----------
+## **Future Enhancements**
 
-## Future Improvements
+- **Support for Additional Cloud Providers**  
+  Extend support to platforms like Google Cloud Storage and Azure Blob Storage.  
 
--   Add support for advanced Redis commands like `INCR`, `EXPIRE`, and `LIST`.
--   Implement persistence for data storage to survive server restarts.
--   Extend the protocol to handle pipelined commands for higher throughput.
+- **Integrated Logging and Monitoring**  
+  Add real-time logging and analytics dashboards for better debugging and performance monitoring.  
 
-----------
+- **Multi-Region S3 Support**  
+  Enable replication and distribution of static assets across multiple AWS regions for improved redundancy.  
 
-## Contributing
+---
 
-Contributions are welcome! Please open an issue or submit a pull request with improvements or bug fixes.
+## **Contributing to Makedis**
 
-----------
+We’re excited to see how the community can improve Makedis! If you have ideas, issues, or enhancements:  
 
-## License
+1. Fork this repository.  
+2. Submit a pull request with your changes.  
+3. Discuss your ideas in the issue tracker.  
 
-This project is licensed under the MIT License.
+Together, we can make Makedis a go-to deployment platform for developers worldwide.  
 
-----------
+---
 
-Feel free to use this project as a foundation for learning distributed systems and networking concepts in Go!
+## **License**
+
+Makedis is released under the MIT License, making it open and free to use for both personal and commercial projects.  
+
+---
+
+**Build, Deploy, Scale – All with Makedis 🚀**  

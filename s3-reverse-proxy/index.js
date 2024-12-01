@@ -10,6 +10,7 @@ app.use((req, res) => {
     const hostname = req.hostname; 
     const subdomain = hostname.split('.')[0]; 
     //can add in Custom Domain using DB Query *feature request* 
+    //DB Query => you could use Primsma -> project -> subdomain, you get projectId with rool basepath
 
     const resolvesTo = `${BASE_PATH}/${subdomain}` // Insert here 
     //reverse proxy 

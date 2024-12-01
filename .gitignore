@@ -1,2 +1,10 @@
 # Ignore node_modules in the build-server directory
 build-server/node_modules/
+
+# Ignore node_modules in the s3-reverse-proxy directory too 
+s3-reverse-proxy/node_modules
+
+
+# Ignore node_modules in the api-server directory too 
+
+api-server/node_modules

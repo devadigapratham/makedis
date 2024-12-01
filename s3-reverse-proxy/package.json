@@ -1,0 +1,23 @@
+{
+  "name": "makedis",
+  "version": "1.0.0",
+  "description": "makedis is a feature-rich modern deployment framework designed to streamline application deployments, enhance static asset delivery, and enable scalable reverse proxy configurations. Built with robust and industry-standard technologies, Makedis offers a modular, efficient, and developer-friendly architecture that can be tailored to diverse use cases.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devadigapratham/makedis.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devadigapratham/makedis/issues"
+  },
+  "homepage": "https://github.com/devadigapratham/makedis#readme",
+  "dependencies": {
+    "express": "^4.21.1",
+    "http-proxy": "^1.18.1"
+  }
+}
